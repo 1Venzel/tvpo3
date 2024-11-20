@@ -32,7 +32,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-    
+
     - name: Debug SSH Setup
       run: |
         mkdir -p ~/.ssh || echo "Error in mkdir"
@@ -43,7 +43,6 @@ jobs:
 
     - name: Set up SSH
       run: |
-        mkdir -p ~/.ssh
         chmod 700 ~/.ssh
         echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
