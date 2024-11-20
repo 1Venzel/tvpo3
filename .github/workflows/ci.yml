@@ -23,5 +23,17 @@ jobs:
     - name: Install system dependencies
       run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
 
+    - name: Install system dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential libyaml-dev
+
+    - name: Upgrade pip, setuptools, and wheel
+      run: pip install --upgrade pip setuptools wheel
+
+    - name: Install Cython
+      run: pip install cython
+
     - name: Install Python dependencies
       run: pip install -r requirements.txt
+
+    - name: Run tests
+      run: pytest
