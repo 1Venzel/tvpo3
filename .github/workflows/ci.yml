@@ -1,4 +1,4 @@
-name: Python CI
+name: Python CI/CD
 
 on:
   push:
@@ -20,8 +20,30 @@ jobs:
 
     - name: Install dependencies
       run: |
+        pip install --upgrade pip
         pip install -r requirements.txt
-        export PYTHONPATH=$PYTHONPATH:$(pwd)
 
     - name: Run tests
       run: pytest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # Этот этап будет выполняться только если все тесты успешно прошли
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC+1zuAQQD+xBC+5H9P+J6HTL7MFhLkBNLP0pZxznukcWMpDcwfmC/heMGQoZ/xtHGaECeUquhm7JTjpgFHp7GnqhuAQOf6Fn384JtfqKlv7gz3VEETEwDzv5/B0VcnJ/V2djoX+A+vR6oy/xb5v2ZGUkHj2IWcQvGE9PbOF7Y9IeE/CQr9pQo2m4/qKa+OV9iS7zM3U48NXV8zpiQ1cepBThc59ilTchw0dix+8ZS3pYmBrY9bigwwFyddTkAcYbkBwknU7S3zbY+JQAZY7P8Sk45fMLwCDAdEhTTQiJRAjttOvslMeHZaVnjKd7xl/md4GNQOtKf6xUnoEiIyLYWhstneg4m0KcOq7UarM8m0HcAM2QRA0AqOZettgF+bJG5bBgc7JTyKzmxLlTw7b2/XMIsgbXT0vHCtaHhlkY2j5ZXnoi1LZ6dKCDG9unXd/rPPd7w0SQ/npt3L5Pf8ziZZ3KeRzitlHJm3Eyz4kiCEn4cmsHmmy+j8KLwd15miaaXg8TA8NS+XMCz2OYLctkudG2P4ktfA7ZKkmEuokxHKcZXnJpYzHiPChdRPVhwNtCaxNZ7Ma7TeqD0RgzeOEx42IqHiKsUZEP76YCpJ9QM1l/rsN7PIAth7uymUtr6qArH/B87SYuruikE4XrMosNzttAbA/oPL+2JC9PZqSd4atQ== iievliev.00@gmail.com }}" > ~/.ssh/authorized_keys
+        chmod 600 ~/.ssh/authorized_keys
+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
+    - name: Deploy to server
+      run: |
+        ssh 1Venzelgithub.com"
+        cd /kulich/mortgage_calculator &&
+        git pull origin main &&
+        systemctl restart your_service
+        "
