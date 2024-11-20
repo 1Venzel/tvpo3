@@ -37,7 +37,6 @@ jobs:
       run: |
         mkdir -p ~/.ssh || echo "Error in mkdir"
         chmod 700 ~/.ssh || echo "Error in chmod"
-        echo "***" > ~/.ssh/id_rsa || echo "Error in creating id_rsa"
         chmod 600 ~/.ssh/id_rsa || echo "Error in chmod id_rsa"
         ssh-keyscan -H 172.22.4.126 >> ~/.ssh/known_hosts || echo "Error in ssh-keyscan"
 
