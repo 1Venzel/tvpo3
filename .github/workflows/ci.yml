@@ -8,32 +8,42 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
+    # Проверка кода
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # Установка Python
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
+    # Установка системных инструментов для сборки
     - name: Install build tools
-      run: sudo apt-get update && sudo apt-get install -y build-essential libffi-dev python3-dev
+      run: sudo apt-get update && sudo apt-get install -y build-essential python3-dev libffi-dev
 
-    - name: Install system dependencies
-      run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+    # Установка системных библиотек для libcurl
+    - name: Install curl libraries
+      run: sudo apt-get install -y libcurl4-openssl-dev
 
-    - name: Install system dependencies
-      run: sudo apt-get update && sudo apt-get install -y build-essential libyaml-dev
+    # Установка системных библиотек для YAML
+    - name: Install YAML libraries
+      run: sudo apt-get install -y libyaml-dev
 
+    # Обновление pip, setuptools и wheel
     - name: Upgrade pip, setuptools, and wheel
       run: pip install --upgrade pip setuptools wheel
 
+    # Установка Cython
     - name: Install Cython
       run: pip install cython
 
+    # Установка Python-зависимостей из requirements.txt
     - name: Install Python dependencies
       run: pip install -r requirements.txt
 
+    # Запуск тестов
     - name: Run tests
       run: pytest
