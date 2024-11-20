@@ -32,30 +32,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
-    - name: Create .ssh directory
-      run: |
-        mkdir -p /home/kulich/.ssh
-        chmod 700 /home/kulich/.ssh
-
-    - name: Ensure HOME is set
-      run: |
-        echo "HOME is set to $HOME"
-        export HOME=/home/kulich
-        mkdir -p ~/.ssh
-        chmod 700 ~/.ssh
-
-    - name: Debug environment
-      run: |
-        echo "Current user: $(whoami)"
-        echo "Home directory: $HOME"
-        ls -ld $HOME
-
-    - name: Create .ssh directory with sudo
-      run: |
-        sudo mkdir -p ~/.ssh
-        sudo chmod 700 ~/.ssh
-
+    
     - name: Debug SSH Setup
       run: |
         mkdir -p ~/.ssh || echo "Error in mkdir"
@@ -71,7 +48,7 @@ jobs:
         echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H 172.22.4.126 >> ~/.ssh/known_hosts
-      shell: bash
+        ls -la ~/.ssh
 
     - name: Deploy to server
       run: |
