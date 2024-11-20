@@ -33,6 +33,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Debug SSH Setup
+      run: |
+        mkdir -p ~/.ssh || echo "Error in mkdir"
+        chmod 700 ~/.ssh || echo "Error in chmod"
+        echo "***" > ~/.ssh/id_rsa || echo "Error in creating id_rsa"
+        chmod 600 ~/.ssh/id_rsa || echo "Error in chmod id_rsa"
+        ssh-keyscan -H 172.22.4.126 >> ~/.ssh/known_hosts || echo "Error in ssh-keyscan"
+
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh
@@ -40,7 +48,8 @@ jobs:
         echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H 172.22.4.126 >> ~/.ssh/known_hosts
-        
+        ls -la ~/.ssh
+
     - name: Deploy to server
       run: |
         ssh -o StrictHostKeyChecking=no git@github.com << EOF
@@ -48,3 +57,11 @@ jobs:
           git pull origin main &&
           systemctl restart your_service
         EOF
+
+    - name: Debug SSH
+      run: |
+        whoami
+        ls -ld ~/.ssh
+        echo "Contents of ~/.ssh:"
+        ls -la ~/.ssh
+    
