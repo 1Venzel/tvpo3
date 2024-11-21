@@ -49,7 +49,7 @@ jobs:
 
     - name: Deploy to server
       run: |
-        ssh -o StrictHostKeyChecking=no git@github.com << EOF
+        ssh -o StrictHostKeyChecking=no 1Venzel@github.com << EOF
           cd //wsl.localhost/Ubuntu/home/kulich/mortgage_calculator &&
           git pull origin main &&
           systemctl restart your_service
