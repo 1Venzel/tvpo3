@@ -47,7 +47,7 @@ jobs:
 
     - name: Deploy to server
       run: |
-        ssh -t -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no kulich@172.22.4.126 << 'EOF'
+        ssh -tt -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no kulich@172.22.4.126 << 'EOF'
           cd mortgage_calculator
           pkill -f main.py || echo "No running main.py process found."
           nohup python3 /home/kulich/mortgage_calculator/main.py &
