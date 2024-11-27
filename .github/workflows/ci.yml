@@ -45,11 +45,10 @@ jobs:
         echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 
     - name: Deploy to server
       run: |
-        ssh -T -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no kulich@172.22.4.126 
+        ssh -T -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no git@github.com
         cd /home/kulich/mortgage_calculator &&
         git pull origin main &&
         systemctl restart your_service
