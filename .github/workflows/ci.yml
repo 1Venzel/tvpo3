@@ -28,37 +28,36 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build  # Этот этап будет выполняться только если все тесты успешно прошли
+    needs: build  # Выполняется только после успешного прохождения этапа build
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Debug SSH Setup
-      run: |
-        mkdir -p ~/.ssh || echo "Error in mkdir"
-        chmod 700 ~/.ssh || echo "Error in chmod"
-        chmod 600 ~/.ssh/id_rsa || echo "Error in chmod id_rsa"
-        ssh-keyscan -H 172.22.4.126 >> ~/.ssh/known_hosts || echo "Error in ssh-keyscan"
-
     - name: Set up SSH
       run: |
+        # Создание директории для SSH-ключей
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+
+        # Установка секретного ключа
         echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
+
+        # Добавление хоста в known_hosts
         ssh-keyscan -H 172.22.4.126 >> ~/.ssh/known_hosts
+
+        # Проверка содержимого .ssh для отладки
         ls -la ~/.ssh
 
     - name: Deploy to server
+      env:
+        GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
       run: |
-        ssh -o StrictHostKeyChecking=no git@github.com << EOF
-          cd //wsl.localhost/Ubuntu/home/kulich/mortgage_calculator &&
-          git pull origin main &&
+        ssh -i ~/.ssh/id_rsa git@github.com << 'EOF'
+          # Переход в директорию проекта на сервере
+          cd //wsl.localhost/Ubuntu/home/kulich/mortgage_calculator 
+          # Обновление кода
+          git pull origin main
+          # Перезапуск сервиса
           systemctl restart your_service
         EOF
-
-    - name: Debug SSH
-      run: |
-        whoami
-        ls -ld ~/.ssh
-        echo "Contents of ~/.ssh:"
-        ls -la ~/.ssh
-    
