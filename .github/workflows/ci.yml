@@ -45,11 +45,11 @@ jobs:
         echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-        ssh-keyscan -H 172.22.4.126 >> ~/.ssh/known_hosts
+        ssh-keyscan -H LAPTOP-2RCQHGPT >> ~/.ssh/known_hosts
 
     - name: Deploy to server
       run: |
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no kulich@172.22.4.126 << 'EOF'
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no kulich@LAPTOP-2RCQHGPT << 'EOF'
         cd /home/kulich/mortgage_calculator
         git pull origin main
         python3 main.py
