@@ -41,7 +41,7 @@ jobs:
         echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
-        # Добавление GitHub и сервера в список известных хостов
+        # Добавление GitHub и сервера в список известных хостовdsds
         ssh-keyscan -H github.com >> ~/.ssh/known_hosts
         ssh-keyscan -H localhost >> ~/.ssh/known_hosts
 
