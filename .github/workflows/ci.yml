@@ -46,12 +46,13 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 
+    - name: Test SSH Connection
+      run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no git@github.com
+
     - name: Deploy to server
-      env:
-        GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
       run: |
-        ssh -i $HOME/.ssh/id_rsa git@github.com << 'EOF'
-          cd /kulich/mortgage_calculator
-          git pull origin main
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no 172.22.4.126 << 'EOF'
+          cd //wsl.localhost/Ubuntu/home/kulich/mortgage_calculator &&
+          git pull origin main &&
           systemctl restart your_service
         EOF
