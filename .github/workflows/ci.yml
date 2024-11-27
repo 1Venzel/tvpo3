@@ -35,18 +35,14 @@ jobs:
 
     - name: Set up SSH
       run: |
-        # Создание директории для SSH-ключей
         mkdir -p ~/.ssh
         chmod 700 ~/.ssh
 
-        # Установка секретного ключа
         echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
-        # Добавление хоста в known_hosts
         ssh-keyscan -H 172.22.4.126 >> ~/.ssh/known_hosts
 
-        # Проверка содержимого .ssh для отладки
         ls -la ~/.ssh
 
     - name: Deploy to server
@@ -54,10 +50,10 @@ jobs:
         GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
       run: |
         ssh -i ~/.ssh/id_rsa git@github.com << 'EOF'
-          # Переход в директорию проекта на сервере
+
           cd //wsl.localhost/Ubuntu/home/kulich/mortgage_calculator 
-          # Обновление кода
+
           git pull origin main
-          # Перезапуск сервиса
+
           systemctl restart your_service
         EOF
