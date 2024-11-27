@@ -32,20 +32,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Debug Environment
+      run: |
+        whoami
+        echo $HOME
+        pwd
+        ls -la
+
     - name: Set up SSH
       run: |
-        mkdir -p /home/kulich/.ssh
-        chmod 700 /home/kulich/.ssh
-        echo "${{ secrets.DEPLOY_SSH_KEY }}" > /home/kulich/.ssh/id_rsa
-        chmod 600 /home/kulich/.ssh/id_rsa
-        ssh-keyscan -H github.com >> /home/kulich/.ssh/known_hosts
-        ls -la /home/kulich/.ssh
+        mkdir -p $HOME/.ssh
+        chmod 700 $HOME/.ssh
+        echo "${{ secrets.DEPLOY_SSH_KEY }}" > $HOME/.ssh/id_rsa
+        chmod 600 $HOME/.ssh/id_rsa
+        ssh-keyscan -H github.com >> $HOME/.ssh/known_hosts
+        ls -la $HOME/.ssh
 
     - name: Deploy to server
       env:
         GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
       run: |
-        ssh -i /home/kulich/.ssh/id_rsa git@github.com << 'EOF'
+        ssh -i $HOME/.ssh/id_rsa git@github.com << 'EOF'
           cd /kulich/mortgage_calculator
           git pull origin main
           systemctl restart your_service
