@@ -60,16 +60,17 @@ jobs:
         echo "Verifying SSH directory:"
         ls -la ~/.ssh
 
-    - name: Deploy to server
+    - name: Deploy to deploy branch
       run: |
-        echo "Deploying to server..."
-        ssh -tt -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no kulich@172.22.4.126 << 'EOF'
-          echo "Connected to server..."
-          cd /home/kulich/mortgage_calculator || { echo "Directory not found"; exit 1; }
-          echo "Pulling latest changes from GitHub..."
-          git pull origin main
-          echo "Restarting the application..."
-          pkill -f main.py || echo "No existing process found."
-          nohup python3 main.py &
-          exit
-        EOF
+        echo "Deploying to deploy branch..."
+        git config --global user.email "iievliev.00@gmail.com"
+        git config --global user.name "1Venzel"
+        
+        echo "Fetching all branches..."
+        git fetch origin
+
+        echo "Checking out deploy branch..."
+        git checkout -B deploy
+
+        echo "Pushing changes to deploy branch..."
+        git push origin deploy --force
