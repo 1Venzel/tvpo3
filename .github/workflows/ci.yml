@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -27,22 +28,48 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build  # Выполняется только если тесты прошли успешно
+    needs: build
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Debug Environment
+      run: |
+        echo "Current User:"
+        whoami
+        echo "Home Directory:"
+        echo $HOME
+        echo "Current Directory:"
+        pwd
+        echo "List of files:"
+        ls -la
+
     - name: Set up SSH
       run: |
+        echo "Setting up SSH directory..."
         mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+
+        echo "Adding private key to SSH..."
         echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H 172.22.4.126 >> ~/.ssh/known_hosts
+
+        echo "Adding GitHub to known hosts..."
+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
+        echo "Verifying SSH directory:"
+        ls -la ~/.ssh
 
     - name: Deploy to server
       run: |
+        echo "Deploying to server..."
         ssh -tt -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no kulich@172.22.4.126 << 'EOF'
-          cd mortgage_calculator
-          pkill -f main.py || echo "No running main.py process found."
-          nohup python3 /home/kulich/mortgage_calculator/main.py &
+          echo "Connected to server..."
+          cd /home/kulich/mortgage_calculator || { echo "Directory not found"; exit 1; }
+          echo "Pulling latest changes from GitHub..."
+          git pull origin main
+          echo "Restarting the application..."
+          pkill -f main.py || echo "No existing process found."
+          nohup python3 main.py &
+          exit
         EOF
